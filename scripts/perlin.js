@@ -15,7 +15,6 @@ let sketch = function (p) {
         //p.noLoop();
     }
 
-    let x1,y1,x2,y2;
     let t = 0;
     let startX = 0;
     p.draw = function () {
