@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "chromotome": "^1.19.1"
+    "chromotome": "^1.19.1",
+    "d3-delaunay": "^5.3.0"
   }
 }
