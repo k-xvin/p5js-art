@@ -1,4 +1,4 @@
-import * as tome from '../../node_modules/chromotome/dist/index.esm.js';
+import * as tome from '../../chromotome.js';
 
 let sketch = function (p) {
 
