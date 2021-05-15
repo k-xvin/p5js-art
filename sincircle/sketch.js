@@ -1,8 +1,9 @@
-import * as tome from '../../chromotome.js';
+//import * as tome from '../../chromotome.js';
 
 let sketch = function (p) {
 
-    let palette = tome.get("tricolor");
+    //let palette = tome.get("tricolor");
+    let pallette = ['#ec643b', '#56b7ab', '#f8cb57', '#1f1e43'];
     let bgColor = palette.background;
 
     let cx;
