@@ -1,7 +1,7 @@
-import * as tome from '../../node_modules/chromotome/dist/index.esm.js';
 
 let sketch = function (p) {
 
+    // https://coolors.co/dccca3-824c71-4a2545-000001-90aa86
     let palette = ["#DCCCA3", "#824C71", "#4A2545", "#000001", "#90AA86"];
 
     p.setup = function () {
