@@ -4,68 +4,79 @@ let sketch = function (p) {
     // https://coolors.co/dccca3-824c71-4a2545-000001-90aa86
     let palette = ["#DCCCA3", "#824C71", "#4A2545", "#000001", "#90AA86"];
 
+    let radiusSlider;
+    let verticesSlider;
+    let periodSlider;
+    let minPetalRadiusSlider;
+    let maxPetalRadiusSlider;
+    let numPetalCirclesSlider;
+
+    // default values
+    let default_radius = 200;
+    let default_vertices = 5;
+    let default_period = 4;
+    let default_minPetalRadius = 10;
+    let default_maxPetalRadius = 30;
+    let default_numPetalCircles = 5;
+
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
-        p.background(palette[0]);
+        p.textSize(24);
+
+
+        let sliderX = 10;
+        let sliderY = 10;
+
+        let labelX = 170;
+        let labelY = 10;
+
+        radiusSlider = createSliderWithLabel(0, 500, default_radius, 1, "Radius");
+        verticesSlider = createSliderWithLabel(0, 25, default_vertices, 1, "Vertices");
+        periodSlider = createSliderWithLabel(0, 5, default_period, 1, "Period");
+        minPetalRadiusSlider = createSliderWithLabel(0, 100, default_minPetalRadius, 1, "Min Petal Radius");
+        maxPetalRadiusSlider = createSliderWithLabel(0, 100, default_maxPetalRadius, 1, "Max Petal Radius");
+        numPetalCirclesSlider = createSliderWithLabel(0, 20, default_numPetalCircles, 1, "Petal Circles");
+
+        // creates a slider and increments for next slider
+        function createSliderWithLabel(min, max, starting, step, label) {
+            let slider = p.createSlider(min, max, starting, step)
+                .position(sliderX, sliderY)
+                .style('width', '150px');
+
+            p.createDiv(label).style('background-color', '#EBEBEB').position(labelX, labelY);
+            sliderY += 20;
+            labelY += 20;
+
+            return slider;
+        }
+
     }
 
-
-    let radius = 200;
     p.draw = function () {
+        let radius = radiusSlider.value();
+        let vertices = verticesSlider.value();
+        let period = periodSlider.value();
+        let minPetalRadius = minPetalRadiusSlider.value();
+        let maxPetalRadius = maxPetalRadiusSlider.value();
+        let numPetalCircles = numPetalCirclesSlider.value();
+
         p.background(palette[0]);
 
-        p.rectMode(p.CENTER);
+        //p.rectMode(p.CENTER);
         p.translate(p.windowWidth / 2, p.windowHeight / 2);
-        //p.circle(0, 0, 10, 10);
+        p.text("happy birthday", -100, -100);
 
-        //p.rotate(p.millis() / 5000);
-        let layers = 4;
-        for (let i = 0; i < 5*layers; i++) {
+        p.rotate(p.millis() / 5000);
+        let layers = 8;
+        for (let i = 0; i < vertices * layers; i++) {
             // 4 rotations until back to starting
-            let point = p5.Vector.fromAngle(p.radians((i * 72) + (p.floor(i / 5) % 4) * 18));
-            let layer = layers - (p.floor(i / 5));
+            let interAngle = (360 / vertices);
+            let point = p5.Vector.fromAngle(p.radians((i * interAngle) + (p.floor(i / vertices) % period) * interAngle / period));
+            let layer = layers - (p.floor(i / vertices));
             point.setMag(radius * layer);
-            //drawPetal(p.createVector(0, 0), point, 100, palette[1]);
-            drawCirclePetal(p.createVector(0, 0), point, 10*layer, 30*layer, 5, palette[layer]);
+            drawCirclePetal(p.createVector(0, 0), point, minPetalRadius * layer, maxPetalRadius * layer, numPetalCircles, palette[layer % 5], palette[2]);
         }
     }
-
-    // draw a petal from point 1 to point 2
-    function drawPetal(p1, p2, curveRadius, color) {
-        p.push();
-        p.stroke(color);
-        p.strokeWeight(4);
-        p.noFill();
-        //p.fill(palette[2]);
-        //let center = { x: (p1.x + p3.y) / 2, y: (p1.y + p3.y) / 2}
-
-        let perpAngle = p.createVector(50, 0).angleBetween(p2) + p.HALF_PI;
-        let curvePoint = p5.Vector.fromAngle(perpAngle);
-        curvePoint.setMag(curveRadius);
-        curvePoint.x += ((p1.x + p2.x) / 2);
-        curvePoint.y += ((p1.y + p2.y) / 2);
-
-        p.circle(curvePoint.x, curvePoint.y, 5);
-
-        p.curve(curvePoint.x, curvePoint.y, p1.x, p1.y, p2.x, p2.y, curvePoint.x, curvePoint.y);
-
-
-        perpAngle = p.createVector(50, 0).angleBetween(p2) - p.HALF_PI;
-        curvePoint = p5.Vector.fromAngle(perpAngle);
-        curvePoint.setMag(curveRadius);
-        curvePoint.x += ((p1.x + p2.x) / 2);
-        curvePoint.y += ((p1.y + p2.y) / 2);
-
-        //p.curve(curvePoint.x, curvePoint.y, p1.x, p1.y, p2.x, p2.y, curvePoint.x, curvePoint.y);
-
-
-        // p.fill("black");
-        // p.noStroke();
-        // p.circle(p3.x, p3.y, 5);
-
-        p.pop();
-    }
-
 
     // Draw a petal shape filled with circles
     // start - starting point
@@ -76,10 +87,7 @@ let sketch = function (p) {
     function drawCirclePetal(start, end, minRadius, maxRadius, numCircles, color, accColor) {
         p.push();
         p.noStroke();
-
-        // start circle
-        //p.fill(color);
-        //p.circle(start.x, start.y, minRadius * 2);
+        p.stroke(accColor);
 
         // transitionary circles
         let distance = p.dist(start.x, start.y, end.x, end.y);
@@ -90,14 +98,7 @@ let sketch = function (p) {
         for (let i = 1; i <= numCircles; i++) {
             let offset = sectionLength * i;
             let currentPoint = { x: start.x + offset * p.cos(angleFromZero), y: start.y + offset * p.sin(angleFromZero) };
-            //currentRadius += radiusSlope;
 
-            // before midpoint
-            // midpoint
-            // if (i == p.ceil(numCircles / 2)) {
-            //     //p.fill(color);
-            //     //p.circle(currentPoint.x, currentPoint.y, maxRadius * 2);
-            // }
             // before midpoint
             if (i <= p.ceil(numCircles / 2)) {
                 currentRadius += radiusSlope;
@@ -112,10 +113,6 @@ let sketch = function (p) {
             p.fill(color);
             p.circle(currentPoint.x, currentPoint.y, currentRadius * 2);
         }
-
-        // end circle
-        //p.fill(color);
-        //p.circle(end.x, end.y, minRadius * 2);
 
         p.pop();
     }
