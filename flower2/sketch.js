@@ -69,11 +69,17 @@ let sketch = function (p) {
 
             drawPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer);
 
+
+            // add a final half petal to normalize petal overlaps
+            if (i == (vertices * layers) - 1) {
+                //drawLastPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer, p.radians(interAngle));
+            }
+
             // add a final half petal to normalize petal overlaps
             // if (i == (vertices * layers) - 1) {
             //     end = p5.Vector.fromAngle(0);
             //     end.setMag(radius * layer);
-            //     drawHalfPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer);
+            //     drawLastPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer, p.radians(interAngle));
             // }
         }
 
@@ -133,12 +139,13 @@ let sketch = function (p) {
         p.pop();
     }
 
-    function drawHalfPetal(start, end, width, fillColor, borderColor, borderWidth) {
+    // Draws a petal shaped such that it will not overlap the first petal
+    function drawLastPetal(start, end, width, fillColor, borderColor, borderWidth, compensationAngle) {
         p.push();
         p.stroke(borderColor);
         p.strokeWeight(borderWidth);
         p.fill(fillColor);
-        //p.noFill();
+        p.noFill();
 
         let angleFromZero = p.createVector(50, 0).angleBetween(end);
         let length = p.abs(start.mag() - end.mag());
@@ -158,7 +165,14 @@ let sketch = function (p) {
         // in summary, controls the "notch" on the end
         let control2 = p5.Vector.fromAngle(angleFromZero).setMag(length * 0.75);
 
+        // half a petal
         p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
+
+        // lines to represent overlap
+        for (let i = 0; i < 8; i++) {
+            p.rotate(compensationAngle);
+            p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
+        }
 
         p.circle(end.x, end.y, 10);
         p.pop();
