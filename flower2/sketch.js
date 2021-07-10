@@ -3,22 +3,28 @@ let sketch = function (p) {
 
     // https://coolors.co/dccca3-824c71-4a2545-000001-90aa86
     let palette = ["#DCCCA3", "#824C71", "#4A2545", "#000001", "#90AA86"];
+    let paletteHSB = [];
 
     let radiusSlider;
     let verticesSlider;
     let periodSlider;
     let widthSlider;
+    let layersSlider;
+
+    let lineCheckbox;
+    let rotateCheckbox;
 
     // default values
-    let default_radius = 200;
+    let default_radius = 80;
     let default_vertices = 5;
-    let default_period = 4;
-    let default_width = 100;
+    let default_period = 5;
+    let default_width = default_radius; //default_radius/2;
+    let default_layers = 5;
+    let default_linesCheck = false;
+    let default_rotateCheck = false;
 
     p.setup = function () {
         p.createCanvas(p.windowWidth, p.windowHeight);
-        p.textSize(24);
-
 
         let sliderX = 10;
         let sliderY = 10;
@@ -26,10 +32,14 @@ let sketch = function (p) {
         let labelX = 170;
         let labelY = 10;
 
-        radiusSlider = createSliderWithLabel(0, 500, default_radius, 1, "Radius");
+        radiusSlider = createSliderWithLabel(0, 250, default_radius, 1, "Radius");
         verticesSlider = createSliderWithLabel(0, 15, default_vertices, 1, "Vertices");
         periodSlider = createSliderWithLabel(0, 10, default_period, 0.5, "Period");
-        widthSlider = createSliderWithLabel(0, 500, default_width, 1, "Width");
+        widthSlider = createSliderWithLabel(0, 250, default_width, 1, "Width");
+        layersSlider = createSliderWithLabel(0, 25, default_layers, 1, "Layers");
+
+        lineCheckbox = p.createCheckbox("Petal Lines", default_linesCheck).position(sliderX, sliderY);
+        rotateCheckbox = p.createCheckbox("Rotate", default_rotateCheck).position(sliderX + 100, sliderY);
 
         // creates a slider and increments for next slider
         function createSliderWithLabel(min, max, starting, step, label) {
@@ -37,12 +47,13 @@ let sketch = function (p) {
                 .position(sliderX, sliderY)
                 .style('width', '150px');
 
-            p.createDiv(label).style('background-color', '#EBEBEB').position(labelX, labelY);
+            p.createDiv(label)/*.style('background-color', '#EBEBEB')*/.position(labelX, labelY);
             sliderY += 20;
             labelY += 20;
 
             return slider;
         }
+
 
     }
 
@@ -51,15 +62,21 @@ let sketch = function (p) {
         let vertices = verticesSlider.value();
         let period = periodSlider.value();
         let width = widthSlider.value();
+        let layers = layersSlider.value();
+
 
         p.background(palette[0]);
 
         //p.rectMode(p.CENTER);
         p.translate(p.windowWidth / 2, p.windowHeight / 2);
-        //p.text("happy birthday", -100, -100);
 
-        //p.rotate(p.millis() / 5000);
-        let layers = 1;
+        p.textSize(24);
+        p.text("happy birthday hannah", -150, -20);
+
+        if (rotateCheckbox.checked()) {
+            p.rotate(p.millis() / 5000);
+        }
+        //let layers = 6;
         for (let i = 0; i < vertices * layers; i++) {
             // 4 rotations until back to starting
             let interAngle = (360 / vertices);
@@ -67,25 +84,31 @@ let sketch = function (p) {
             let layer = layers - (p.floor(i / vertices));
             end.setMag(radius * layer);
 
-            drawPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer);
+            p.colorMode(p.HSB, 100);
+            let petalColor = p.color(palette[1]);
+            let outlineColor = p.color(palette[0]);
 
+            let brightnessOffset = (p.brightness(petalColor) / (layers * 2)) + 1;
+            //petalColor = p.color(p.hue(petalColor), p.saturation(petalColor), p.brightness(petalColor) - layer*7);
+            petalColor = p.color(p.hue(petalColor), p.saturation(petalColor), p.brightness(petalColor) - brightnessOffset * layer);
+            outlineColor = p.color(p.hue(outlineColor), p.saturation(outlineColor), p.brightness(outlineColor));
 
-            // add a final half petal to normalize petal overlaps
-            if (i == (vertices * layers) - 1) {
-                //drawLastPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer, p.radians(interAngle));
+            if (layer != 1 && lineCheckbox.checked()) {
+                drawPetal(p.createVector(0, 0), end, width * layer, petalColor, outlineColor, 3, true);
+            }
+            else {
+                drawPetal(p.createVector(0, 0), end, width * layer, petalColor, outlineColor, 3, false);
             }
 
+
+
             // add a final half petal to normalize petal overlaps
-            // if (i == (vertices * layers) - 1) {
-            //     end = p5.Vector.fromAngle(0);
-            //     end.setMag(radius * layer);
-            //     drawLastPetal(p.createVector(0, 0), end, width * layer, palette[1], palette[2], 3 + layer, p.radians(interAngle));
-            // }
+            // but that shit is too hard bro
         }
 
     }
 
-    function drawPetal(start, end, width, fillColor, borderColor, borderWidth) {
+    function drawPetal(start, end, width, fillColor, borderColor, borderWidth, hasLine) {
         p.push();
         p.stroke(borderColor);
         p.strokeWeight(borderWidth);
@@ -126,8 +149,11 @@ let sketch = function (p) {
         // p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
 
         // draw a line in the middle
-        // p.stroke(centerLineColor);
-        // p.line(start.x, start.y, end.x, end.y);
+        if (hasLine) {
+            p.stroke(borderColor);
+            p.strokeWeight(2);
+            p.line(start.x, start.y, end.x, end.y);
+        }
 
 
         // debug bezier points

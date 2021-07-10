@@ -64,7 +64,7 @@ let sketch = function (p) {
 
         //p.rectMode(p.CENTER);
         p.translate(p.windowWidth / 2, p.windowHeight / 2);
-        p.text("happy birthday", -100, -100);
+        //p.text("happy birthday", -100, -100);
 
         p.rotate(p.millis() / 5000);
         let layers = 8;
