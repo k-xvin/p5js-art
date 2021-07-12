@@ -166,43 +166,43 @@ let sketch = function (p) {
     }
 
     // Draws a petal shaped such that it will not overlap the first petal
-    function drawLastPetal(start, end, width, fillColor, borderColor, borderWidth, compensationAngle) {
-        p.push();
-        p.stroke(borderColor);
-        p.strokeWeight(borderWidth);
-        p.fill(fillColor);
-        p.noFill();
+    // function drawLastPetal(start, end, width, fillColor, borderColor, borderWidth, compensationAngle) {
+    //     p.push();
+    //     p.stroke(borderColor);
+    //     p.strokeWeight(borderWidth);
+    //     p.fill(fillColor);
+    //     p.noFill();
 
-        let angleFromZero = p.createVector(50, 0).angleBetween(end);
-        let length = p.abs(start.mag() - end.mag());
+    //     let angleFromZero = p.createVector(50, 0).angleBetween(end);
+    //     let length = p.abs(start.mag() - end.mag());
 
-        let thirdLength = length / 3;
-        let widthAngle = p.atan(width / thirdLength);
-        let widthHypotenuse = p.sqrt(thirdLength * thirdLength + width * width);
+    //     let thirdLength = length / 3;
+    //     let widthAngle = p.atan(width / thirdLength);
+    //     let widthHypotenuse = p.sqrt(thirdLength * thirdLength + width * width);
 
-        // Note: in p5, angle goes negative as it goes counterclockwise
-        // this point will be width distance away from the mid of the central axis
-        // perpendicular to the central axis
-        // in summary, controls the "width"
-        let control1 = p5.Vector.fromAngle(angleFromZero - widthAngle).setMag(widthHypotenuse);
+    //     // Note: in p5, angle goes negative as it goes counterclockwise
+    //     // this point will be width distance away from the mid of the central axis
+    //     // perpendicular to the central axis
+    //     // in summary, controls the "width"
+    //     let control1 = p5.Vector.fromAngle(angleFromZero - widthAngle).setMag(widthHypotenuse);
 
-        // this point will be along the central axis
-        // and 75% of the full length
-        // in summary, controls the "notch" on the end
-        let control2 = p5.Vector.fromAngle(angleFromZero).setMag(length * 0.75);
+    //     // this point will be along the central axis
+    //     // and 75% of the full length
+    //     // in summary, controls the "notch" on the end
+    //     let control2 = p5.Vector.fromAngle(angleFromZero).setMag(length * 0.75);
 
-        // half a petal
-        p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
+    //     // half a petal
+    //     p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
 
-        // lines to represent overlap
-        for (let i = 0; i < 8; i++) {
-            p.rotate(compensationAngle);
-            p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
-        }
+    //     // lines to represent overlap
+    //     for (let i = 0; i < 8; i++) {
+    //         p.rotate(compensationAngle);
+    //         p.bezier(start.x, start.y, control1.x, control1.y, control2.x, control2.y, end.x, end.y);
+    //     }
 
-        p.circle(end.x, end.y, 10);
-        p.pop();
-    }
+    //     p.circle(end.x, end.y, 10);
+    //     p.pop();
+    // }
 }
 
 
