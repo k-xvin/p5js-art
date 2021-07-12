@@ -23,7 +23,6 @@ let sketch = function (p) {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.textSize(24);
 
-
         let sliderX = 10;
         let sliderY = 10;
 
