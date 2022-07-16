@@ -1,2 +1,1 @@
-# p5js-testground
-Generative art made with p5.js
+This is where my p5js art hangs out.

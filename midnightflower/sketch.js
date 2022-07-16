@@ -71,7 +71,6 @@ let sketch = function (p) {
         p.translate(p.windowWidth / 2, p.windowHeight / 2);
 
         p.textSize(24);
-        p.text("happy birthday hannah", -150, -20);
 
         if (rotateCheckbox.checked()) {
             p.rotate(p.millis() / 5000);
