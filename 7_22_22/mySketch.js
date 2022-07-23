@@ -1,8 +1,7 @@
 // OPC.toggle('blend_DODGE', false);
 // OPC.toggle('blend_BURN', false);
 
-OPC.button('blendButton', 'cycle blendmode');
-let blendCycle;
+// OPC.button('blendButton', 'cycle blendmode');
 
 //https://coolors.co/1e1e24-c19ab7-9c95dc-228cdb-0b7189
 let palette = ["#1e1e24","#c19ab7","#9c95dc","#228cdb","#0b7189"];
@@ -10,6 +9,7 @@ let scaleFactor = 10;
 let t;
 let bgColor;
 let points = [];
+let blendCycle = 0;
 function setup() {
 	blendCycle = 0;
 	createCanvas(windowWidth, windowHeight);
@@ -21,18 +21,21 @@ function setup() {
 	noFill();
 	for(let i=0;i<500;i++){
 		// circle(random(50,300)*cos(t), random(50,300)*sin(t)+10*sin(t), 20);
-		let point = p5.Vector.random2D().mult(random(50,windowWidth));
+		let ppoint = p5.Vector.random2D().mult(random(50,windowWidth));
 		let col = color(palette[floor(random(1,5))]);
 		col.setAlpha(200);
 		points[i] = {
-			"x": point.x, 
-			"y": point.y,
+			"x": ppoint.x, 
+			"y": ppoint.y,
 			"timeOffset": random(0, PI),
 			"col": col
 		};
 	}
 	
 	background(bgColor);
+
+    frameRate(30);
+    createLoop({duration:3, gif:{download: true, fileName:"7_22_22.gif"}});
 }
 
 function draw() {
